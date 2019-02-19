@@ -37,9 +37,9 @@ class Matrix(object):
         if not self.is_square():
             raise ValueError("Cannot calculate determinant of non-square matrix.")
         if self.h > 2:
-            raise NotImplementedError("Calculating determinant not implemented for matrices largerer than 2x2.")
+            raise NotImplementedError("Calculating determinant not implemented for matrices larger than 2x2.")
         
-        # TODO - implement
+        return self.g[0][0] * self.g[1][1] - self.g[0][1] * self.g[1][0]
 
     def trace(self):
         """
@@ -48,18 +48,43 @@ class Matrix(object):
         if not self.is_square():
             raise ValueError("Cannot calculate the trace of a non-square matrix.")
 
-        # TODO - implement
+        return [
+            [self.g[1][1], - self.g[0][1]],
+            [- self.g[1][0], self.g[0][0]]
+        ]
 
     def inverse(self):
         """
         Calculates the inverse of a 1x1 or 2x2 Matrix.
         """
+        inverse = []
         if not self.is_square():
             raise ValueError("Non-square Matrix does not have an inverse.")
         if self.h > 2:
             raise NotImplementedError ("inversion not implemented for matrices larger than 2x2.")
 
-        # TODO - implement
+        if self.h == 1:
+            inverse.append([1/self.g[0][0]])
+        elif self.h == 2:
+            if self.determinant() == 0:
+                raise ValueError("Cannot find the inverse of a matrix that has a determinant value of 0")
+            else:
+                a = self.g[0][0]
+                b = self.g[0][1]
+                c = self.g[1][0]
+                d = self.g[1][1]
+                coefficient = 1 / (a * d - b * c)
+                inverse = [
+                    [d, -b]
+                    [-c, a]
+                ]
+
+                for i in range(self.h):
+                    for j in range(self.w):
+                        inverse[i][j] = inverse[i][j] * coefficient
+        
+        return inverse
+
 
     def T(self):
         """
