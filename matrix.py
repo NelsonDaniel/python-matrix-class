@@ -35,9 +35,9 @@ class Matrix(object):
         Calculates the determinant of a 1x1 or 2x2 matrix.
         """
         if not self.is_square():
-            raise(ValueError, "Cannot calculate determinant of non-square matrix.")
+            raise ValueError("Cannot calculate determinant of non-square matrix.")
         if self.h > 2:
-            raise(NotImplementedError, "Calculating determinant not implemented for matrices largerer than 2x2.")
+            raise NotImplementedError("Calculating determinant not implemented for matrices largerer than 2x2.")
         
         # TODO - implement
 
@@ -46,7 +46,7 @@ class Matrix(object):
         Calculates the trace of a matrix (sum of diagonal entries).
         """
         if not self.is_square():
-            raise(ValueError, "Cannot calculate the trace of a non-square matrix.")
+            raise ValueError("Cannot calculate the trace of a non-square matrix.")
 
         # TODO - implement
 
@@ -55,9 +55,9 @@ class Matrix(object):
         Calculates the inverse of a 1x1 or 2x2 Matrix.
         """
         if not self.is_square():
-            raise(ValueError, "Non-square Matrix does not have an inverse.")
+            raise ValueError("Non-square Matrix does not have an inverse.")
         if self.h > 2:
-            raise(NotImplementedError, "inversion not implemented for matrices larger than 2x2.")
+            raise NotImplementedError ("inversion not implemented for matrices larger than 2x2.")
 
         # TODO - implement
 
@@ -104,7 +104,7 @@ class Matrix(object):
         Defines the behavior of the + operator
         """
         if self.h != other.h or self.w != other.w:
-            raise(ValueError, "Matrices can only be added if the dimensions are the same") 
+            raise ValueError("Matrices can only be added if the dimensions are the same") 
         #   
         # TODO - implement
         #
