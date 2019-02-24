@@ -18,6 +18,18 @@ def identity(n):
             I.g[i][i] = 1.0
         return I
 
+def dot_product(vector1, vector2):
+    """
+    Returns the dot product between two vectors. It can be
+    used as a helper function to calculate the multiplication
+    by two matrices.
+    """
+    result = 0
+    for i in range(len(vector1)):
+        result += vector1[i] * vector2[i]
+
+    return result
+
 class Matrix(object):
 
     # Constructor
@@ -47,11 +59,12 @@ class Matrix(object):
         """
         if not self.is_square():
             raise ValueError("Cannot calculate the trace of a non-square matrix.")
-
-        return [
-            [self.g[1][1], - self.g[0][1]],
-            [- self.g[1][0], self.g[0][0]]
-        ]
+        result = 0
+        for i in range(self.h):
+            for j in range(self.w):
+                if i == j:
+                    result += self.g[i][j]
+        return result
 
     def inverse(self):
         """
@@ -75,22 +88,25 @@ class Matrix(object):
                 d = self.g[1][1]
                 coefficient = 1 / (a * d - b * c)
                 inverse = [
-                    [d, -b]
+                    [d, -b],
                     [-c, a]
                 ]
 
                 for i in range(self.h):
                     for j in range(self.w):
                         inverse[i][j] = inverse[i][j] * coefficient
-        
-        return inverse
+        return Matrix(inverse)
 
 
     def T(self):
         """
         Returns a transposed copy of this Matrix.
         """
-        # TODO - implement
+        result = zeroes(self.w, self.h)
+        for i in range(self.h):
+            for j in range(self.w):
+                result[j][i] = self.g[i][j]
+        return result
 
     def is_square(self):
         return self.h == self.w
@@ -130,9 +146,14 @@ class Matrix(object):
         """
         if self.h != other.h or self.w != other.w:
             raise ValueError("Matrices can only be added if the dimensions are the same") 
-        #   
-        # TODO - implement
-        #
+        
+        result = zeroes(self.h, self.w)
+        for i in range(self.h):
+            for j in range(self.w):
+                result[i][j] = self.g[i][j] + other[i][j] 
+        
+        return result
+
 
     def __neg__(self):
         """
@@ -146,25 +167,50 @@ class Matrix(object):
           -1.0  -2.0
           -3.0  -4.0
         """
-        #   
-        # TODO - implement
-        #
+        neg = zeroes(self.h, self.w)
+        for i in range(self.h):
+            for j in range(self.w):
+                neg[i][j] = - self.g[i][j]
+        
+        return neg
 
     def __sub__(self, other):
         """
         Defines the behavior of - operator (as subtraction)
         """
-        #   
-        # TODO - implement
-        #
+        if self.h != other.h or self.w != other.w:
+            raise ValueError("Matrices can only be added if the dimensions are the same") 
+
+        result = zeroes(self.h, self.w)
+        for i in range(self.h):
+            for j in range(self.w):
+                result[i][j] = self.g[i][j] - other[i][j] 
+        
+        return result
 
     def __mul__(self, other):
         """
         Defines the behavior of * operator (matrix multiplication)
         """
-        #   
-        # TODO - implement
-        #
+        if self.w != other.h:
+            raise ValueError("Matrix multiplication is only possible if the width of the first matrix is the same as the height of the second matrix") 
+
+        result = zeroes(self.h, other.w)
+        for i in range(self.h):
+            for j in range(other.w):
+                result[i][j] = dot_product(self.get_row(i), other.get_column(j))
+
+        return result
+        
+    def get_row(self, row_number):
+        return self.g[row_number]
+
+    def get_column(self, column_number):
+        result = []
+        for i in range(self.h):
+            result.append(self.g[i][column_number])
+
+        return result
 
     def __rmul__(self, other):
         """
@@ -178,9 +224,11 @@ class Matrix(object):
           2.0  0.0
           0.0  2.0
         """
-        if isinstance(other, numbers.Number):
-            pass
-            #   
-            # TODO - implement
-            #
+        result = Matrix(self.g)
+        if isinstance(other, numbers.Number):           
+           for i in range(self.h):
+               for j in range(self.w):
+                   result[i][j] = result[i][j] * other
+        
+        return result
             
